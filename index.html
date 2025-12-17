@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Anarbekov Adilkan | Portfolio</title>
+    <meta
+      name="description"
+      content="Portfolio of Anarbekov Adilkan (Flutter developer)"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+
+    <meta name="color-scheme" content="light dark" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="topbar" role="banner">
+      <div class="container topbar__inner">
+        <a class="brand" href="#about" aria-label="Home">
+          <span class="brand__mark" id="brandMark" aria-hidden="true">AA</span>
+          <span class="brand__text" id="brandName">Anarbekov Adilkan</span>
+        </a>
+
+        <nav class="nav" aria-label="Primary">
+          <ul class="nav__list" id="navList"></ul>
+        </nav>
+
+        <div class="topbar__actions">
+          <div class="lang" role="group" aria-label="Language switch">
+            <button class="lang__btn" type="button" data-lang="ru">RU</button>
+            <button class="lang__btn" type="button" data-lang="en">EN</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="container">
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+
+      <div id="content" class="content" aria-live="off">
+        <section
+          id="about"
+          class="section hero"
+          aria-labelledby="aboutTitle"
+        ></section>
+        <section id="skills" class="section" aria-labelledby="skillsTitle"></section>
+        <section
+          id="projects"
+          class="section"
+          aria-labelledby="projectsTitle"
+        ></section>
+        <section
+          id="education"
+          class="section"
+          aria-labelledby="educationTitle"
+        ></section>
+        <section
+          id="experience"
+          class="section"
+          aria-labelledby="experienceTitle"
+        ></section>
+        <section
+          id="languages"
+          class="section"
+          aria-labelledby="languagesTitle"
+        ></section>
+        <section
+          id="contact"
+          class="section"
+          aria-labelledby="contactTitle"
+        ></section>
+      </div>
+    </main>
+
+    <footer class="footer" id="footer"></footer>
+
+    <noscript>
+      <div class="noscript container">
+        <strong>JavaScript is required.</strong>
+        <div>Пожалуйста, включите JavaScript, чтобы сайт корректно работал.</div>
+      </div>
+    </noscript>
+
+    <script src="js/script.js" defer></script>
+  </body>
+</html>
