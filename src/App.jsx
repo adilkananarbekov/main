@@ -2,8 +2,6 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { ContactShadows, Environment, Html, OrbitControls, useGLTF } from '@react-three/drei';
 import {
-  FaArrowLeft,
-  FaArrowRight,
   FaGithub,
   FaLinkedinIn,
   FaTelegramPlane,
@@ -66,7 +64,7 @@ const tickerSkills = [
 ];
 
 function HouseModel(props) {
-  const { scene } = useGLTF('/models/house.glb');
+  const { scene } = useGLTF(`${import.meta.env.BASE_URL}models/house.glb`);
   return <primitive object={scene} {...props} />;
 }
 
@@ -93,22 +91,11 @@ function Scene() {
   );
 }
 
-useGLTF.preload('/models/house.glb');
+useGLTF.preload(`${import.meta.env.BASE_URL}models/house.glb`);
 
 export default function App() {
-  const sliderRef = useRef(null);
   const [roleText, setRoleText] = useState('');
   const [roleMode, setRoleMode] = useState('');
-
-  const handleSlide = (direction) => {
-    if (!sliderRef.current) {
-      return;
-    }
-    sliderRef.current.scrollBy({
-      left: direction * 360,
-      behavior: 'smooth',
-    });
-  };
 
   useEffect(() => {
     const revealElements = document.querySelectorAll('.reveal');
@@ -290,7 +277,10 @@ export default function App() {
 
           <div className="hero-visual">
             <div className="portrait-card reveal lift" data-parallax="0.08">
-              <img src="/images/portrait.png" alt="Adilkan Anarbekov portrait" />
+              <img
+                src={`${import.meta.env.BASE_URL}images/portrait.png`}
+                alt="Adilkan Anarbekov portrait"
+              />
               <div className="portrait-meta">
                 <p>Flutter, Firebase, IoT</p>
                 <span>Based on strong programming fundamentals</span>
@@ -366,16 +356,8 @@ export default function App() {
                 A mix of real products and experimental builds that showcase my range.
               </p>
             </div>
-            <div className="slider-controls">
-              <button type="button" className="slider-btn" onClick={() => handleSlide(-1)}>
-                <FaArrowLeft />
-              </button>
-              <button type="button" className="slider-btn" onClick={() => handleSlide(1)}>
-                <FaArrowRight />
-              </button>
-            </div>
           </div>
-          <div ref={sliderRef} className="slider">
+          <div className="slider">
             {projects.map((project) => (
               <article
                 key={project.title}

@@ -414,21 +414,9 @@
 
 .slider {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(260px, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: var(--space-6);
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding-bottom: var(--space-4);
-}
-
-.slider::-webkit-scrollbar {
-  height: 6px;
-}
-
-.slider::-webkit-scrollbar-thumb {
-  background: var(--line);
-  border-radius: 999px;
+  overflow: visible;
 }
 
 .card {
