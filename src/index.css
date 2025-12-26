@@ -1,14 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500&family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
   color-scheme: dark;
-  --bg: #0b0b0b;
-  --surface: #151515;
-  --surface-2: #1f1f1f;
-  --text: #f5f5f5;
-  --text-muted: #b6b6b6;
-  --line: #2a2a2a;
+  --bg: #0a0c10;
+  --surface: #11151d;
+  --surface-2: #161b25;
+  --text: #f7f8fa;
+  --text-muted: #a5acb8;
+  --line: #262b36;
   --white: #ffffff;
+
+  --accent-1: #4dd2ff;
+  --accent-2: #f25f5c;
+  --accent-3: #f6bd60;
+  --accent-4: #70f7c2;
 
   --radius-sm: 6px;
   --radius-md: 12px;
@@ -32,12 +37,25 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: 'Space Grotesk', 'IBM Plex Sans', sans-serif;
+  font-family: 'Manrope', sans-serif;
   background: var(--bg);
   color: var(--text);
 }
 
+img {
+  max-width: 100%;
+  display: block;
+}
+
 a {
   color: inherit;
+}
+
+button {
+  font-family: inherit;
 }
