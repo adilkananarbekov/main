@@ -1,6 +1,14 @@
-import { Suspense, useRef } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { ContactShadows, Environment, Html, OrbitControls, useGLTF } from '@react-three/drei';
+import {
+  FaArrowLeft,
+  FaArrowRight,
+  FaGithub,
+  FaLinkedinIn,
+  FaTelegramPlane,
+  FaWhatsapp,
+} from 'react-icons/fa';
 import './App.css';
 
 const projects = [
@@ -67,7 +75,7 @@ function Scene() {
 
   useFrame((_, delta) => {
     if (group.current) {
-      group.current.rotation.y += delta * 0.15;
+      group.current.rotation.y += delta * 0.12;
     }
   });
 
@@ -75,7 +83,7 @@ function Scene() {
     <>
       <ambientLight intensity={0.6} />
       <directionalLight position={[5, 7, 5]} intensity={1.1} />
-      <group ref={group} position={[0, -0.9, 0]} scale={1}>
+      <group ref={group} position={[0, -0.95, 0]} scale={1}>
         <HouseModel />
       </group>
       <ContactShadows position={[0, -1.15, 0]} opacity={0.45} blur={2.8} scale={14} />
@@ -89,6 +97,8 @@ useGLTF.preload('/models/house.glb');
 
 export default function App() {
   const sliderRef = useRef(null);
+  const [roleText, setRoleText] = useState('');
+  const [roleMode, setRoleMode] = useState('');
 
   const handleSlide = (direction) => {
     if (!sliderRef.current) {
@@ -100,64 +110,201 @@ export default function App() {
     });
   };
 
+  useEffect(() => {
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    revealElements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const parallaxElements = Array.from(document.querySelectorAll('[data-parallax]'));
+    if (!parallaxElements.length) {
+      return undefined;
+    }
+
+    let frame = null;
+    const update = () => {
+      frame = null;
+      const scrollY = window.scrollY || 0;
+      parallaxElements.forEach((element) => {
+        const speed = parseFloat(element.dataset.parallax || '0.08');
+        element.style.setProperty('--parallax', `${scrollY * speed}px`);
+      });
+    };
+
+    const onScroll = () => {
+      if (frame) {
+        return;
+      }
+      frame = requestAnimationFrame(update);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    update();
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (frame) {
+        cancelAnimationFrame(frame);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+    const fullTitle = 'Generalist Programmer';
+
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const updateText = (value) => {
+      if (isActive) {
+        setRoleText(value);
+      }
+    };
+
+    const typeText = async (text, speed = 60) => {
+      for (let i = 1; i <= text.length; i += 1) {
+        updateText(text.slice(0, i));
+        await sleep(speed);
+      }
+    };
+
+    const deleteText = async (text, speed = 40) => {
+      for (let i = text.length; i >= 0; i -= 1) {
+        updateText(text.slice(0, i));
+        await sleep(speed);
+      }
+    };
+
+    const run = async () => {
+      await typeText(fullTitle);
+      await sleep(600);
+      await deleteText(fullTitle);
+      await sleep(250);
+      await typeText('Student', 80);
+      await sleep(900);
+      setRoleMode('glitch');
+      updateText('Flutter Developer');
+      await sleep(1100);
+      setRoleMode('fade');
+      await sleep(400);
+      setRoleMode('');
+      updateText(fullTitle);
+    };
+
+    run();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
   return (
     <div className="app">
       <div className="bg-glow glow-left" />
       <div className="bg-glow glow-right" />
 
-      <header className="hero container">
-        <div className="hero-text">
-          <p className="eyebrow">Portfolio / 2025</p>
-          <h1>Adilkan Anarbekov</h1>
-          <p className="role">Generalist Programmer</p>
-          <p className="summary">
-            I build clean, reliable apps with strong fundamentals, thoughtful UX,
-            and a focus on real-world impact.
-          </p>
-          <div className="cta-row">
-            <a className="btn primary" href="#projects">Explore Projects</a>
-            <a className="btn ghost" href="mailto:adilkananarbekov751@gmail.com">Email Me</a>
-          </div>
-          <div className="hero-stats">
-            <div className="stat-card">
-              <p className="stat-label">Hackathons</p>
-              <p className="stat-value">2</p>
-            </div>
-            <div className="stat-card">
-              <p className="stat-label">Flutter Intensive</p>
-              <p className="stat-value">6 months</p>
-            </div>
-            <div className="stat-card">
-              <p className="stat-label">Competitive C++</p>
-              <p className="stat-value">2 years</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="hero-right">
-          <div className="portrait-card">
-            <img src="/images/portrait.png" alt="Adilkan Anarbekov portrait" />
-            <div className="portrait-meta">
-              <p>Flutter, Firebase, IoT</p>
-              <span>Based on strong programming fundamentals</span>
-            </div>
-          </div>
-          <div className="hero-canvas">
-            <Canvas
-              shadows
-              camera={{ position: [4.2, 2.4, 5.8], fov: 36 }}
-              dpr={[1, 2]}
+      <header className="hero">
+        <div className="hero-background" aria-hidden="true">
+          <Canvas
+            shadows
+            camera={{ position: [6.1, 3.2, 8.2], fov: 34 }}
+            dpr={[1, 2]}
+          >
+            <Suspense
+              fallback={(
+                <Html center className="loader">
+                  Loading 3D...
+                </Html>
+              )}
             >
-              <Suspense
-                fallback={(
-                  <Html center className="loader">
-                    Loading 3D...
-                  </Html>
-                )}
+              <Scene />
+            </Suspense>
+          </Canvas>
+        </div>
+        <div className="hero-overlay" aria-hidden="true" />
+
+        <div className="hero-inner container">
+          <div className="hero-text">
+            <p className="eyebrow">Portfolio / 2025</p>
+            <h1>Adilkan Anarbekov</h1>
+            <p
+              className={`role ${roleMode ? `role--${roleMode}` : ''}`}
+              data-text={roleText}
+              aria-live="polite"
+            >
+              {roleText}
+            </p>
+            <p className="summary">
+              I build clean, reliable apps with strong fundamentals, thoughtful UX,
+              and a focus on real-world impact.
+            </p>
+            <div className="cta-row">
+              <a className="btn primary" href="#projects">Explore Projects</a>
+              <a className="btn ghost" href="mailto:adilkananarbekov751@gmail.com">Email Me</a>
+            </div>
+            <div className="social-buttons">
+              <a className="icon-btn" href="https://t.me/Adilkan_07" aria-label="Telegram">
+                <FaTelegramPlane />
+              </a>
+              <a className="icon-btn" href="https://wa.me/996551255272" aria-label="WhatsApp">
+                <FaWhatsapp />
+              </a>
+              <a className="icon-btn" href="https://github.com/adilkananarbekov" aria-label="GitHub">
+                <FaGithub />
+              </a>
+              <a
+                className="icon-btn"
+                href="https://www.linkedin.com/in/%D0%B0%D0%B4%D0%B8%D0%BB%D0%BA%D0%B0%D0%BD-%D0%B0%D0%BD%D0%B0%D1%80%D0%B1%D0%B5%D0%BA%D0%BE%D0%B2-5b157b303/"
+                aria-label="LinkedIn"
               >
-                <Scene />
-              </Suspense>
-            </Canvas>
+                <FaLinkedinIn />
+              </a>
+            </div>
+            <div className="hero-stats">
+              <div className="stat-card reveal lift" data-parallax="0.04">
+                <p className="stat-label">Hackathons</p>
+                <p className="stat-value">2</p>
+              </div>
+              <div className="stat-card reveal lift" data-parallax="0.06">
+                <p className="stat-label">Flutter Intensive</p>
+                <p className="stat-value">6 months</p>
+              </div>
+              <div className="stat-card reveal lift" data-parallax="0.05">
+                <p className="stat-label">Competitive C++</p>
+                <p className="stat-value">2 years</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="hero-visual">
+            <div className="portrait-card reveal lift" data-parallax="0.08">
+              <img src="/images/portrait.png" alt="Adilkan Anarbekov portrait" />
+              <div className="portrait-meta">
+                <p>Flutter, Firebase, IoT</p>
+                <span>Based on strong programming fundamentals</span>
+              </div>
+            </div>
+            <div className="hero-card reveal lift" data-parallax="0.04">
+              <p className="hero-card-title">Currently focused on</p>
+              <p className="hero-card-text">React Native + Firebase product builds</p>
+              <div className="hero-card-tags">
+                <span>Mobile</span>
+                <span>Realtime</span>
+                <span>UX polish</span>
+              </div>
+            </div>
           </div>
         </div>
       </header>
@@ -192,7 +339,7 @@ export default function App() {
           </div>
 
           <div className="about-grid">
-            <div className="panel">
+            <div className="panel reveal lift" data-parallax="0.04">
               <h3>Focus</h3>
               <ul className="bullet-list">
                 <li>Mobile apps with clean UX and reliable architecture.</li>
@@ -200,7 +347,7 @@ export default function App() {
                 <li>Fast prototyping with real user value.</li>
               </ul>
             </div>
-            <div className="panel accent">
+            <div className="panel accent reveal lift" data-parallax="0.02">
               <h3>Stack</h3>
               <div className="tag-cloud">
                 {['Flutter', 'Dart', 'Firebase', 'React', 'Three.js', 'Arduino', 'Git'].map((item) => (
@@ -221,16 +368,21 @@ export default function App() {
             </div>
             <div className="slider-controls">
               <button type="button" className="slider-btn" onClick={() => handleSlide(-1)}>
-                Prev
+                <FaArrowLeft />
               </button>
               <button type="button" className="slider-btn" onClick={() => handleSlide(1)}>
-                Next
+                <FaArrowRight />
               </button>
             </div>
           </div>
           <div ref={sliderRef} className="slider">
             {projects.map((project) => (
-              <article key={project.title} className="card" style={{ '--accent': project.accent }}>
+              <article
+                key={project.title}
+                className="card reveal lift"
+                style={{ '--accent': project.accent }}
+                data-parallax="0.03"
+              >
                 <div className="card-top">
                   <span className="card-pill">{project.meta}</span>
                   <span className="card-year">{project.year}</span>
@@ -249,7 +401,7 @@ export default function App() {
         </section>
 
         <section className="section split">
-          <div className="panel big">
+          <div className="panel big reveal lift" data-parallax="0.03">
             <h2>How I Work</h2>
             <p className="section-subtitle">
               I like building fast, testing assumptions early, and polishing the details
@@ -257,7 +409,7 @@ export default function App() {
             </p>
             <div className="process-grid">
               {['Discover', 'Design', 'Build', 'Ship'].map((step, index) => (
-                <div key={step} className="process-card">
+                <div key={step} className="process-card reveal lift" data-parallax="0.02">
                   <span className="process-index">0{index + 1}</span>
                   <h4>{step}</h4>
                   <p>Focused iterations with clear outcomes.</p>
@@ -265,7 +417,7 @@ export default function App() {
               ))}
             </div>
           </div>
-          <div className="panel contact-panel" id="contact">
+          <div className="panel contact-panel reveal lift" id="contact" data-parallax="0.05">
             <h2>Contact</h2>
             <p className="section-subtitle">Open to collaboration and ambitious ideas.</p>
             <div className="contact-list">
@@ -273,6 +425,14 @@ export default function App() {
               <p>Telegram: @Adilkan_07</p>
               <p>GitHub: github.com/adilkananarbekov</p>
               <p>WhatsApp: +996 551 255 272</p>
+            </div>
+            <div className="contact-actions">
+              <a className="btn ghost" href="https://t.me/Adilkan_07">
+                <FaTelegramPlane /> Telegram
+              </a>
+              <a className="btn ghost" href="https://wa.me/996551255272">
+                <FaWhatsapp /> WhatsApp
+              </a>
             </div>
             <a className="btn primary" href="mailto:adilkananarbekov751@gmail.com">
               Start a project
