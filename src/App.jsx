@@ -124,10 +124,12 @@ export default function App() {
     let frame = null;
     const update = () => {
       frame = null;
-      const scrollY = window.scrollY || 0;
+      const viewportMid = window.innerHeight * 0.5;
       parallaxElements.forEach((element) => {
         const speed = parseFloat(element.dataset.parallax || '0.08');
-        element.style.setProperty('--parallax', `${scrollY * speed}px`);
+        const rect = element.getBoundingClientRect();
+        const offset = Math.max(0, viewportMid - rect.top);
+        element.style.setProperty('--parallax', `${offset * speed}px`);
       });
     };
 
@@ -139,10 +141,12 @@ export default function App() {
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
     update();
 
     return () => {
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
       if (frame) {
         cancelAnimationFrame(frame);
       }
